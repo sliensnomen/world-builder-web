@@ -32,13 +32,13 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className="relative h-screen w-full snap-start flex flex-col items-center justify-center px-6 md:px-16 lg:px-24 overflow-hidden">
+    <section className="relative h-screen w-full flex flex-col items-center justify-center px-6 md:px-16 lg:px-24 overflow-hidden">
       <div className="max-w-5xl w-full mx-auto">
         <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true, amount: 0.5 }}
           className="text-[#8C8C8C] text-xs tracking-[0.3em] uppercase mb-16 font-sans"
         >
           Capabilities
@@ -48,26 +48,56 @@ export default function FeaturesSection() {
           {features.map((feature, index) => (
             <motion.div
               key={feature.num}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: index * 0.12 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              viewport={{ once: true, amount: 0.5 }}
               className="group grid grid-cols-12 gap-6 py-8 border-t border-[#C9A96E]/10 hover:border-[#C9A96E]/30 transition-colors duration-500"
             >
               <div className="col-span-12 md:col-span-2">
-                <span className="font-serif text-[#C9A96E] text-3xl md:text-4xl">
+                <motion.span
+                  className="font-serif text-[#C9A96E] text-3xl md:text-4xl inline-block"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.2 + index * 0.15,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  viewport={{ once: true, amount: 0.5 }}
+                >
                   {feature.num}
-                </span>
+                </motion.span>
               </div>
               <div className="col-span-12 md:col-span-4">
-                <h3 className="font-serif text-[#F5F0E6] text-2xl md:text-3xl group-hover:text-[#C9A96E] transition-colors duration-500">
+                <motion.h3
+                  className="font-serif text-[#F5F0E6] text-2xl md:text-3xl group-hover:text-[#C9A96E] transition-colors duration-500"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.35 + index * 0.15,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  viewport={{ once: true, amount: 0.5 }}
+                >
                   {feature.title}
-                </h3>
+                </motion.h3>
               </div>
               <div className="col-span-12 md:col-span-6">
-                <p className="font-sans text-[#8C8C8C] leading-relaxed">
+                <motion.p
+                  className="font-sans text-[#8C8C8C] leading-relaxed"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.5 + index * 0.15,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  viewport={{ once: true, amount: 0.5 }}
+                >
                   {feature.desc}
-                </p>
+                </motion.p>
               </div>
             </motion.div>
           ))}

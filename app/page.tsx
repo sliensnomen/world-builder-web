@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import HeroSection from "./sections/HeroSection";
 import PainSection from "./sections/PainSection";
 import SolutionSection from "./sections/SolutionSection";
@@ -8,6 +9,7 @@ import FeaturesSection from "./sections/FeaturesSection";
 import TechStackSection from "./sections/TechStackSection";
 import PhilosophySection from "./sections/PhilosophySection";
 import CTASection from "./sections/CTASection";
+import GlobalEffects from "./components/GlobalEffects";
 
 const sections = [
   { id: "hero", label: "01" },
@@ -19,37 +21,91 @@ const sections = [
   { id: "cta", label: "07" },
 ];
 
+function SectionWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0.9, scale: 0.98 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: false, amount: 0.3 }}
+      transition={{
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1],
+        delay: 0.1,
+      }}
+      className="h-screen w-full snap-start"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export default function Home() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const { scrollYProgress } = useScroll({ container: containerRef });
+
+  const progressLine = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
+      const scrollTop = containerRef.current?.scrollTop || 0;
       const windowHeight = window.innerHeight;
       const index = Math.round(scrollTop / windowHeight);
       setActiveIndex(Math.min(Math.max(index, 0), sections.length - 1));
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const container = containerRef.current;
+    container?.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container?.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToSection = (index: number) => {
-    window.scrollTo({
+    containerRef.current?.scrollTo({
       top: index * window.innerHeight,
       behavior: "smooth",
     });
   };
 
   return (
-    <div className="relative h-screen w-full overflow-y-scroll scroll-smooth snap-y snap-mandatory no-scrollbar">
-      <HeroSection />
-      <PainSection />
-      <SolutionSection />
-      <FeaturesSection />
-      <TechStackSection />
-      <PhilosophySection />
-      <CTASection />
+    <>
+      <GlobalEffects />
+
+      {/* Scroll progress line */}
+      <motion.div
+        className="fixed top-0 left-0 h-px bg-[#C9A96E]/60 z-[10000]"
+        style={{ width: progressLine }}
+      />
+
+      <div
+        ref={containerRef}
+        className="relative h-screen w-full overflow-y-scroll scroll-smooth snap-y snap-mandatory no-scrollbar"
+      >
+        <SectionWrapper>
+          <HeroSection />
+        </SectionWrapper>
+        <SectionWrapper>
+          <PainSection />
+        </SectionWrapper>
+        <SectionWrapper>
+          <SolutionSection />
+        </SectionWrapper>
+        <SectionWrapper>
+          <FeaturesSection />
+        </SectionWrapper>
+        <SectionWrapper>
+          <TechStackSection />
+        </SectionWrapper>
+        <SectionWrapper>
+          <PhilosophySection />
+        </SectionWrapper>
+        <SectionWrapper>
+          <CTASection />
+        </SectionWrapper>
+      </div>
 
       {/* Side navigation dots */}
       <nav className="fixed right-6 md:right-10 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4">
@@ -79,6 +135,6 @@ export default function Home() {
           </button>
         ))}
       </nav>
-    </div>
+    </>
   );
 }

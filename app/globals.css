@@ -7,6 +7,12 @@
   --accent: #C9A96E;
   --conflict: #B85450;
   --muted: #8C8C8C;
+
+  /* Cinematic easings */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @theme inline {
@@ -47,33 +53,148 @@ body {
   opacity: 0.4;
 }
 
-/* Breathing arrow animation */
+/* Breathing arrow animation - slower, cinematic */
 @keyframes breathe {
-  0%, 100% { opacity: 0.3; transform: translateY(0); }
-  50% { opacity: 0.8; transform: translateY(8px); }
+  0%, 100% { opacity: 0.2; transform: translateY(0); }
+  50% { opacity: 0.7; transform: translateY(10px); }
 }
 
 .breathe-arrow {
-  animation: breathe 2.4s ease-in-out infinite;
+  animation: breathe 3s ease-in-out infinite;
 }
 
-/* Pulsing relation path */
-@keyframes pulse-path {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.6; }
+/* Film grain overlay */
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
 }
 
-.pulse-path {
-  animation: pulse-path 3s ease-in-out infinite;
+.film-grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  animation: grain 8s steps(10) infinite;
 }
 
-/* Staggered note float */
+/* Vignette */
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+}
+
+/* Slow floating ambient animation for notes */
 @keyframes note-float {
   0%, 100% { transform: translateY(0) rotate(var(--rotation)); }
-  50% { transform: translateY(-6px) rotate(var(--rotation)); }
+  50% { transform: translateY(-8px) rotate(var(--rotation)); }
 }
 
 .note-float {
-  animation: note-float 5s ease-in-out infinite;
+  animation: note-float 6s ease-in-out infinite;
   animation-delay: var(--delay);
+}
+
+/* Ink path drawing */
+@keyframes ink-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+.ink-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* Path wanderer - golden dot traveling along line */
+@keyframes path-wander {
+  0% { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+.path-wanderer {
+  offset-path: path("M 100 200 C 200 200, 250 100, 400 150");
+  animation: path-wander 4s linear infinite;
+}
+
+/* Typewriter cursor blink */
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: cursor-blink 1s step-end infinite;
+}
+
+/* Line draw from left */
+@keyframes line-draw-left {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Line draw from center */
+@keyframes line-draw-center {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Corner bracket grow */
+@keyframes corner-grow {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Spotlight expand */
+@keyframes spotlight-expand {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 0.15; transform: scale(1); }
+}
+
+/* Paper fall settle */
+@keyframes paper-fall {
+  0% { opacity: 0; transform: translateY(-120px) rotate(var(--rotation)) scale(0.9); }
+  60% { opacity: 1; transform: translateY(10px) rotate(var(--rotation)) scale(1.02); }
+  80% { transform: translateY(-4px) rotate(var(--rotation)) scale(0.99); }
+  100% { transform: translateY(0) rotate(var(--rotation)) scale(1); }
+}
+
+.paper-fall {
+  animation: paper-fall 1.4s var(--ease-out-back) forwards;
+  animation-delay: var(--delay);
+  opacity: 0;
+}
+
+/* Word reveal */
+@keyframes word-reveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.word-reveal {
+  animation: word-reveal 1.2s var(--ease-out-expo) forwards;
+  animation-delay: var(--delay);
+  opacity: 0;
+}
+
+/* Section scale entrance */
+@keyframes section-enter {
+  from { opacity: 0.85; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
 }
