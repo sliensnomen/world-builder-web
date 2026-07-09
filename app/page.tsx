@@ -1,65 +1,84 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import HeroSection from "./sections/HeroSection";
+import PainSection from "./sections/PainSection";
+import SolutionSection from "./sections/SolutionSection";
+import FeaturesSection from "./sections/FeaturesSection";
+import TechStackSection from "./sections/TechStackSection";
+import PhilosophySection from "./sections/PhilosophySection";
+import CTASection from "./sections/CTASection";
+
+const sections = [
+  { id: "hero", label: "01" },
+  { id: "pain", label: "02" },
+  { id: "solution", label: "03" },
+  { id: "features", label: "04" },
+  { id: "tech", label: "05" },
+  { id: "philosophy", label: "06" },
+  { id: "cta", label: "07" },
+];
 
 export default function Home() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const index = Math.round(scrollTop / windowHeight);
+      setActiveIndex(Math.min(Math.max(index, 0), sections.length - 1));
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (index: number) => {
+    window.scrollTo({
+      top: index * window.innerHeight,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="relative h-screen w-full overflow-y-scroll scroll-smooth snap-y snap-mandatory no-scrollbar">
+      <HeroSection />
+      <PainSection />
+      <SolutionSection />
+      <FeaturesSection />
+      <TechStackSection />
+      <PhilosophySection />
+      <CTASection />
+
+      {/* Side navigation dots */}
+      <nav className="fixed right-6 md:right-10 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-4">
+        {sections.map((section, index) => (
+          <button
+            key={section.id}
+            onClick={() => scrollToSection(index)}
+            className="group flex items-center gap-3 text-right"
+            aria-label={`Go to section ${section.label}`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <span
+              className={`font-sans text-xs tracking-wider transition-all duration-300 ${
+                activeIndex === index
+                  ? "text-[#C9A96E] opacity-100"
+                  : "text-[#8C8C8C] opacity-0 group-hover:opacity-60"
+              }`}
+            >
+              {section.label}
+            </span>
+            <div
+              className={`h-px transition-all duration-300 ${
+                activeIndex === index
+                  ? "w-8 bg-[#C9A96E]"
+                  : "w-4 bg-[#8C8C8C]/40 group-hover:w-6 group-hover:bg-[#8C8C8C]/70"
+              }`}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }

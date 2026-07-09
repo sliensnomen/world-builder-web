@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #2B1F15;
+  --background-deep: #1F1610;
+  --foreground: #F5F0E6;
+  --accent: #C9A96E;
+  --conflict: #B85450;
+  --muted: #8C8C8C;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-deep: var(--background-deep);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-conflict: var(--conflict);
+  --color-muted: var(--muted);
+  --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Editorial dotted rules */
+.rule-dotted {
+  border-top: 1px dotted var(--accent);
+  opacity: 0.4;
+}
+
+/* Breathing arrow animation */
+@keyframes breathe {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 0.8; transform: translateY(8px); }
+}
+
+.breathe-arrow {
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+/* Pulsing relation path */
+@keyframes pulse-path {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.6; }
+}
+
+.pulse-path {
+  animation: pulse-path 3s ease-in-out infinite;
+}
+
+/* Staggered note float */
+@keyframes note-float {
+  0%, 100% { transform: translateY(0) rotate(var(--rotation)); }
+  50% { transform: translateY(-6px) rotate(var(--rotation)); }
+}
+
+.note-float {
+  animation: note-float 5s ease-in-out infinite;
+  animation-delay: var(--delay);
 }
